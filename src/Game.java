@@ -31,6 +31,12 @@ public class Game {
         int count = 1;
         char check = player1.getPlayerElement();
         while(!field.checkWinner(check)){
+            if(count == 10){
+                System.out.println("Ничья!");
+                writeRes(player1.getPlayerName(), "NON");
+                writeRes(player2.getPlayerName(), "NON");
+                break;
+            }
             count++;
             check = (count % 2) == 0 ? player1.getPlayerElement() : player2.getPlayerElement();
             System.out.println("Введите число по горизонтали");
@@ -41,10 +47,12 @@ public class Game {
             field.displayField();
         }
         if(check == 'x'){
+            System.out.println(player1.getPlayerName() + " Победил!");
             writeRes(player1.getPlayerName(), "W");
             writeRes(player2.getPlayerName(), "L");
         }
         if(check == 'o'){
+            System.out.println(player2.getPlayerName() + " Победил!");
             writeRes(player2.getPlayerName(), "W");
             writeRes(player1.getPlayerName(), "L");
         }
