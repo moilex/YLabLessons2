@@ -46,12 +46,12 @@ public class Game {
             field.movePlayer(h,v,check);
             field.displayField();
         }
-        if(check == 'x'){
+        if(check == 'x' && count < 10){
             System.out.println(player1.getPlayerName() + " Победил!");
             writeRes(player1.getPlayerName(), "W");
             writeRes(player2.getPlayerName(), "L");
         }
-        if(check == 'o'){
+        if(check == 'o' && count < 10){
             System.out.println(player2.getPlayerName() + " Победил!");
             writeRes(player2.getPlayerName(), "W");
             writeRes(player1.getPlayerName(), "L");
