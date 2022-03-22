@@ -8,7 +8,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-public class ReplayGame {
+public class ReplayGame implements Parser{
     GameField field = new GameField();
     private final String fileName;
     XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -18,7 +18,7 @@ public class ReplayGame {
 
     }
 
-    public void replayStep() {
+    public void displayStep() {
         try {
             XMLEventReader eventReader = inputFactory.createXMLEventReader(new FileInputStream(fileName));
             while (eventReader.hasNext()) {

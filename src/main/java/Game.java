@@ -1,18 +1,20 @@
+import org.json.simple.parser.ParseException;
 import javax.xml.stream.XMLStreamException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Game {
-    public static void main(String[] args) throws XMLStreamException, IOException {
+    public static void main(String[] args) throws XMLStreamException, IOException, ParseException {
         play();
     }
 
-    public static void play() throws XMLStreamException, IOException {
+    public static void play() throws XMLStreamException, IOException, ParseException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Введите 1 чтобы начать игру!");
         System.out.println("Введите 2 чтобы посмотреть прошлые игры.");
         System.out.println("Введите 3 для выхода.");
+        System.out.println("Введите 4 что посмотреть json.");
         switch(sc.nextInt()){
             case 1: startGame();
                 sc.close();
@@ -24,22 +26,31 @@ public class Game {
                 Scanner s = new Scanner(System.in);
                 String name = s.nextLine();
                 ReplayGame rep = new ReplayGame( name + ".xml");
-                rep.replayStep();
+                rep.displayStep();
                 play();
                 break;
             case 3:
                 break;
+            case 4:
+                System.out.println("Введите название игры(без формата файла)");
+                Scanner m = new Scanner(System.in);
+                String nameG = m.nextLine();
+                ReadJson re = new ReadJson(nameG + ".json");
+                re.displayGame();
+                play();
         }
     }
 
-    private static void startGame() throws XMLStreamException, IOException {
+    private static void startGame() throws XMLStreamException, IOException, ParseException {
         Scanner sc = new Scanner(System.in);
         GameField field = new GameField();
         WriterXml xml;
+        WriterJson json = new WriterJson();
         System.out.println("Введите имя первого игрока: ");
         Players player1 = new Players(1, sc.nextLine());
         System.out.println("Введите имя второго игрока: ");
         Players player2 = new Players(2, sc.nextLine());
+        json.writePlayers(player1, player2);
         xml = new WriterXml((player1.getPlayerName() + " - " + player2.getPlayerName() + ".xml"));
         xml.writePlayers(player1.getPlayerName(), 'x');
         xml.writePlayers(player2.getPlayerName(), 'o');
@@ -51,6 +62,7 @@ public class Game {
                 System.out.println("Ничья!");
                 writeRes(player1.getPlayerName(), "NON");
                 writeRes(player2.getPlayerName(), "NON");
+                json.writeGameplay(json.writeResult('d'), player1.getPlayerName() + " - " + player2.getPlayerName());
                 xml.writeDraw();
                 break;
             }
@@ -62,6 +74,7 @@ public class Game {
             field.movePlayer(h,v,check);
             field.displayField();
             xml.writeStep(count,check,h,v);
+            json.writeStep(count,check,h,v);
             count++;
         }
         xml.writeEndTeg();
@@ -70,12 +83,14 @@ public class Game {
             writeRes(player1.getPlayerName(), "W");
             writeRes(player2.getPlayerName(), "L");
             xml.writeGameResult('x', player1.getPlayerName(), 1);
+            json.writeGameplay(json.writeResult('x'), player1.getPlayerName() + " - " + player2.getPlayerName());
         }
         if(check == 'o' && count < 10){
             System.out.println(player2.getPlayerName() + " Победил!");
             writeRes(player2.getPlayerName(), "W");
             writeRes(player1.getPlayerName(), "L");
             xml.writeGameResult('o', player1.getPlayerName(), 2);
+            json.writeGameplay(json.writeResult('o'), player1.getPlayerName() + " - " + player2.getPlayerName());
         }
         xml.endWrite();
         play();

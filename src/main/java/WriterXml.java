@@ -4,7 +4,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class WriterXml {
+public class WriterXml implements Writer {
     private XMLOutputFactory output;
     private XMLStreamWriter writer;
     public WriterXml(String path) throws IOException, XMLStreamException {
@@ -33,20 +33,24 @@ public class WriterXml {
         writer.flush();
     }
 
-    public void writeStep(int count, char playerSymbol, int h,int v) throws XMLStreamException {
+    public void writeStep(int count, char playerSymbol, int h,int v){
         String playerId;
         if(playerSymbol == 'x'){
             playerId = Integer.toString(1);
         }else{
             playerId = Integer.toString(2);
         }
-        writer.writeStartElement("Step");
-        writer.writeAttribute("num", Integer.toString(count));
-        writer.writeAttribute("playerId", playerId);
-        writer.writeCharacters((Integer.toString(h)));
-        writer.writeCharacters(Integer.toString(v));
-        writer.writeEndElement();
-        writer.writeDTD("\n");
+        try {
+            writer.writeStartElement("Step");
+            writer.writeAttribute("num", Integer.toString(count));
+            writer.writeAttribute("playerId", playerId);
+            writer.writeCharacters((Integer.toString(h)));
+            writer.writeCharacters(Integer.toString(v));
+            writer.writeEndElement();
+            writer.writeDTD("\n");
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
     }
 
     public void writeStartGame() throws XMLStreamException {
